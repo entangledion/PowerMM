@@ -52,5 +52,5 @@ Instructions:
 
 CREDITS
 
-entangledion (Core script)
-Sean Engelbrecht (MineMeld Add-Indicator Powershell function)
+- entangledion (Core script)
+- Sean Engelbrecht (MineMeld Add-Indicator Powershell function)
