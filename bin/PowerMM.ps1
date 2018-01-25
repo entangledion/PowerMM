@@ -823,7 +823,7 @@ function Ingest {
 	if ($global:abortdialog -ne $true) {
 		function Get-IncidentName {
 			$global:var_prop_value = "incident"
-			if (($global:var_incidentname = Read-SingleLineInputBoxDialog -Message "Enter a Description:" -WindowTitle "PowerMM - Indicator Description" -HelpText "Give the indicators a description in 100 characters or less." -DefaultText $global:var_incidentname -Required $true -CheckboxID "1") -eq "") {
+			if (($global:var_incidentname = Read-SingleLineInputBoxDialog -Message "Enter a Description:" -WindowTitle ("PowerMM v" + $version + " - Indicator Description") -HelpText "Give the indicators a description in 100 characters or less." -DefaultText $global:var_incidentname -Required $true -CheckboxID "1") -eq "") {
 			}
 		}
 		Invoke-Expression Get-IncidentName
@@ -840,7 +840,7 @@ function Ingest {
 			if ($global:var_indicators -eq $null) {
 				$global:BackButtonState = $null
 			}
-			if (($global:var_indicators = Read-MultiLineInputBoxDialog -Message "Paste in attack indicators (IP, Domain, or URL)." -WindowTitle "PowerMM - Attack Indicators" -HelpText "Type or paste in a list of attack indicators (IP, Domain, or URL). The paste indicators box will accept unstructured text and will extract valid indicators automatically." -DefaultText $global:var_indicators -Required $true) -eq "") {
+			if (($global:var_indicators = Read-MultiLineInputBoxDialog -Message "Paste in attack indicators (IP, Domain, or URL)." -WindowTitle ("PowerMM v" + $version + " - Attack Indicators") -HelpText "Type or paste in a list of attack indicators (IP, Domain, or URL). The paste indicators box will accept unstructured text and will extract valid indicators automatically." -DefaultText $global:var_indicators -Required $true) -eq "") {
 				$global:var_indicators
 			}
 			
