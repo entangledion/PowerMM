@@ -187,11 +187,7 @@ function Read-MultiLineInputBoxDialog([string]$Message, [string]$WindowTitle, [s
      
     Shows how to break the second parameter (Message) up onto two lines using the powershell newline character (`n).
     if you break the message up into more than two lines the extra lines will be hidden behind or show ontop of the TextBox.
-     
-    .NOTES
-    Name: Show-MultiLineInputDialog
-    Author: Daniel Schroeder (originally based on the code shown at http://technet.microsoft.com/en-us/library/ff730941.aspx)
-    Version: 1.0
+
 #>
     Add-Type -AssemblyName System.Drawing
     Add-Type -AssemblyName System.Windows.Forms
