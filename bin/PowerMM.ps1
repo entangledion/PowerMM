@@ -823,7 +823,7 @@ function Ingest {
 	if ($global:abortdialog -ne $true) {
 		function Get-IncidentName {
 			$global:var_prop_value = "incident"
-			if (($global:var_incidentname = Read-SingleLineInputBoxDialog -Message "Enter a Description:" -WindowTitle ("PowerMM v" + $version + " - Indicator Description") -HelpText "Give the indicators a description in 100 characters or less." -DefaultText $global:var_incidentname -Required $true -CheckboxID "1") -eq "") {
+			if (($global:var_incidentname = Read-SingleLineInputBoxDialog -Message "Enter a Description:" -WindowTitle ("PowerMM v" + $version + " - Description") -HelpText "Give the indicators a description in 100 characters or less." -DefaultText $global:var_incidentname -Required $true -CheckboxID "1") -eq "") {
 			}
 		}
 		Invoke-Expression Get-IncidentName
