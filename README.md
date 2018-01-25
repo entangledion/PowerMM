@@ -10,7 +10,7 @@ Currently the script supports uploading the following types of indicators:
 Features:
 
 - Rapid indicator ingestion into custom IPv4 & URL MineMeld Miners (nodes).
-- Can upload a combined list of IPv4, Domain Name, and URL indicators to multiple nodes in a single pass.
+- Can upload a combined list of IPv4, Domain Name, and URL indicators to multiple miners in a single pass.
 - The paste indicators box will accept unstructured text and will extract valid indicators automatically.
 - Option to automatically create wildcard variants of uploaded domain names.
 - Automatically stamps indicator descriptions with the user that uploaded it, and date stamp.
