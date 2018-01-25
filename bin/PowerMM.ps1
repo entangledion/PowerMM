@@ -63,7 +63,7 @@ if ($true) {
 	# Example: Acme_URL_Blocklist
 	$global:urlindlist_exists = test-path ($workingpath + "\ioclist_url.conf")
 	if ($global:urlindlist_exists -eq $false) {
-		read-host -Prompt "Enter the URL indicator list you wish to update" | out-file ($workingpath + "\ioclist_url.conf")
+		read-host -Prompt "Enter the URL Miner you wish to update" | out-file ($workingpath + "\ioclist_url.conf")
 	}
 	[String]$global:urlindlist = Get-Content ($workingpath + "\ioclist_url.conf")
 
@@ -71,7 +71,7 @@ if ($true) {
 	# Example: inboundfeedhc_url
 	$global:urloutnode_exists = test-path ($workingpath + "\outnode_url.conf")
 	if ($global:urloutnode_exists -eq $false) {
-		read-host -Prompt "Enter the associated URL output node name (to check it for duplicate indicators)" | out-file ($workingpath + "\outnode_url.conf")
+		read-host -Prompt "Enter the associated URL Output node name (to check it for duplicate indicators)" | out-file ($workingpath + "\outnode_url.conf")
 	}
 	[String]$global:urloutnode = Get-Content ($workingpath + "\outnode_url.conf")
 
@@ -79,7 +79,7 @@ if ($true) {
 	# Example: Acme_IPv4_Blocklist
 	$ipv4indlist_exists = test-path ($workingpath + "\ioclist_ipv4.conf")
 	if ($ipv4indlist_exists -eq $false) {
-		read-host -Prompt "Enter the IPv4 indicator list you wish to update" | out-file ($workingpath + "\ioclist_ipv4.conf")
+		read-host -Prompt "Enter the IPv4 Miner you wish to update" | out-file ($workingpath + "\ioclist_ipv4.conf")
 	}
 	[String]$ipv4indlist = Get-Content ($workingpath + "\ioclist_ipv4.conf")
 
@@ -87,7 +87,7 @@ if ($true) {
 	# Example: inboundfeedhc_ipv4
 	$ipv4outnode_exists = test-path ($workingpath + "\outnode_ipv4.conf")
 	if ($ipv4outnode_exists -eq $false) {
-		read-host -Prompt "Enter the associated IPv4 output node name (to check it for duplicate indicators)" | out-file ($workingpath + "\outnode_ipv4.conf")
+		read-host -Prompt "Enter the associated IPv4 Output node name (to check it for duplicate indicators)" | out-file ($workingpath + "\outnode_ipv4.conf")
 	}
 	[String]$ipv4outnode = Get-Content ($workingpath + "\outnode_ipv4.conf")
 }
