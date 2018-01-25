@@ -4,6 +4,7 @@ CREDIT.
 
 - entangledion (Core script)
 - Sean Engelbrecht (MineMeld Add-Indicator Powershell function)
+- Daniel Schroeder (Show-Multi & Single LineInputDialog). Originally based on the code shown at http://technet.microsoft.com/en-us/library/ff730941.aspx.
 
 PRE-REQUISITES.
 
