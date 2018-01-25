@@ -21,7 +21,7 @@ clear
 
 # Set Static Variables
 if ($true) {
-	$version = "0.1"
+	$version = "1.0"
 	$logonas = $env:username # Do not modify
 	$invocation = (Get-Variable MyInvocation).Value
 	$workingpath = Split-Path $invocation.MyCommand.Path
