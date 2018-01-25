@@ -1,5 +1,5 @@
 # PowerMM
-A Powershell-based graphical user interface utility to quickly paste in a list of indicators and upload to MineMeld lists/nodes/miners. Useful if you maintain custom firewall IP and URL dynamic blocklists in MineMeld.
+A Powershell-based graphical user interface utility to quickly paste in a list of indicators and upload to MineMeld Miners. Useful if you maintain custom firewall IP and URL dynamic blocklists in MineMeld.
 
 Currently the script supports uploading the following types of indicators:
 
