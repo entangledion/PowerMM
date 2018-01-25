@@ -48,7 +48,7 @@ Instructions:
 - Optionally, check or uncheck the box "Create wildcard entries for domains"
 - Click Next
 - Review the summary information for accuracy, click Back to make changes, or Confirm to start the upload
-- At the Main Menu, click Exit or "GO" to upload more indicators
+- At the Main Menu, click Exit, or "GO" to upload more indicators
 
 CREDIT
 
