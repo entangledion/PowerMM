@@ -27,7 +27,7 @@ Instructions:
 
 - Clone/download files to a destination folder where you want it to reside.
 - Execute: powershell.exe -ExecutionPolicy bypass -C PowerMM.ps1
-- When prompted:
+- You will prompted at first execution for:
     - Enter the IP or hostname of your MineMeld server
       - Example: minemeld.acme.corp
     - Enter your MineMeld username
