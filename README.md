@@ -28,18 +28,18 @@ Instructions:
 - Clone/download files to a destination folder where you want it to reside.
 - Execute: powershell.exe -ExecutionPolicy bypass -C PowerMM.ps1
 - You will prompted at first execution for:
-    - Enter the IP or hostname of your MineMeld server
+    - The IP or hostname of your MineMeld server
       - Example: minemeld.acme.corp
-    - Enter your MineMeld username
-    - Enter your MineMeld password
-    - Enter the URL node type (Miner) name that you want to update 
+    - Your MineMeld username
+    - Your MineMeld password
+    - The URL node type (Miner) name that you want to update 
       - Example: Acme_URL_Blocklist (the "Miner" Node name shown under the "Config" tab in MineMeld)
-    - Enter an associated URL output feed name (so the script can check it for duplicate indicators)
+    - An associated URL output feed name (so the script can check it for duplicate indicators)
       - Example: inboundfeedhc_url (the "Output" Node name shown under the "Config" tab in MineMeld)
       - Example: Corresponds to https://minemeld.acme.corp/feeds/inboundfeedhc_url
-    - Enter the IPv4 node type (Miner) name that you want to update
+    - The IPv4 node type (Miner) name that you want to update
       - Example: Acme_IPv4_Blocklist (the "Miner" Node name shown under the "Config" tab in MineMeld)
-    - Enter an associated IPv4 output feed name (so the script can check it for duplicate indicators)
+    - An associated IPv4 output feed name (so the script can check it for duplicate indicators)
       - Example: inboundfeedhc_ipv4 (the "Output" Node name shown under the "Config" tab in MineMeld)
       - Example: Corresponds to https://minemeld.acme.corp/feeds/inboundfeedhc_ipv4
 - At the main menu, click "GO"
