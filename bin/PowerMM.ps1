@@ -689,12 +689,12 @@ function Add-Indicator {
                     $global:url = "https://" + $Server + "/config/data/" + $IndicatorList + "_indicators/append?h=" + $IndicatorList
                     $Response = Invoke-RestMethod $global:url -Method Post -Body $requestBody -ContentType 'application/json' -Headers $Headers
                     Write-Host "The Following Indicator was added: $indicator"
-					Write-Output "The Following Indicator was added: " >> $global:logfile
+					Write-Output "The Following Indicator was added: $indicator" >> $global:logfile
                 }
                 else
                 {
                     Write-Host "The Following Indicator was skipped, already in the list: $indicator"
-                    Write-Output "The Following Indicator was skipped, already in the list: " >> $global:logfile
+                    Write-Output "The Following Indicator was skipped, already in the list: $indicator" >> $global:logfile
                 }
                 if ( "$Type" -eq "URL" )
                     {
@@ -1056,15 +1056,12 @@ $addrarray"
 						if ($cb -eq "1") {
 							try {
 								Add-Indicator -Server $server -Indicator $ioc -IncludeSubDomain -Type URL -FeedList $global:urloutnode -IndicatorList $global:urlindlist -BypassSSL
-								Write-Output $ioc >> $global:logfile
-								Write-Output ("*." + $ioc) >> $global:logfile
 							} catch {
 								Write-Output $_ >> $global:logfile
 							}
 						} else {
 							try {
 								Add-Indicator -Server $server -Indicator $ioc -Type URL -FeedList $global:urloutnode -IndicatorList $global:urlindlist -BypassSSL
-								Write-Output $ioc >> $global:logfile
 							} catch {
 								Write-Output $_ >> $global:logfile
 							}
@@ -1078,7 +1075,6 @@ $addrarray"
 					foreach ($ioc in $urls) {
 						try {
 							Add-Indicator -Server $server -Indicator $ioc -Type URL -FeedList $global:urloutnode -IndicatorList $global:urlindlist -BypassSSL
-							Write-Output $ioc >> $global:logfile
 						} catch {
 							Write-Output $_ >> $global:logfile
 						}
@@ -1091,7 +1087,6 @@ $addrarray"
 					foreach ($ioc in $addr) {
 						try {
 							Add-Indicator -Server $server -Indicator $ioc -Type IPv4 -FeedList $ipv4outnode -IndicatorList $ipv4indlist -BypassSSL
-							Write-Output $ioc >> $global:logfile
 						} catch {
 							Write-Output $_ >> $global:logfile
 						}
