@@ -21,7 +21,7 @@ clear
 
 # Set Static Variables
 if ($true) {
-	$version = "1.0"
+	$version = "1.1"
 	$logonas = $env:username # Do not modify
 	$invocation = (Get-Variable MyInvocation).Value
 	$workingpath = Split-Path $invocation.MyCommand.Path
@@ -1033,18 +1033,20 @@ $addrarray"
 				# Submit a new incident
 				$global:BackButtonAction = $false
 				
+				# Set incident timestamp
+				$global:Timestamp = Get-Date -Format "yyyy-MM-ddTHH-mm-sszz"
+				
+				# Create and update log files
+				$global:logfile = ($logdir + "\log-" + $global:Timestamp + ".txt")
+				Write-Output $global:Comment >> $global:logfile
+				
 				# Create and update incident history file
 				$incidenthist_exists = test-path $incident_history
 				if ($incidenthist_exists -eq $false) {
 						Write-Output "timestamp,name" > $incident_history
 				} else {
-						Write-Output  ("`n`r" + [string]$Timestamp + "," + [string]$global:var_incidentname) >> $incident_history
+						Write-Output  ("`n`r" + $global:Timestamp + "," + [string]$global:var_incidentname) >> $incident_history
 				}
-				
-				# Create and update detailed log files
-				$Timestamp = Get-Date -Format "yyyy-MM-ddThh-mm-sszz"
-				$global:logfile = ($logdir + "\log-" + $Timestamp + ".txt")
-				Write-Output $global:Comment >> $global:logfile
 				
 				# Create and associate the defined indicators
 				$testpath = Test-Path $cachefile_hosts
@@ -1055,6 +1057,7 @@ $addrarray"
 							try {
 								Add-Indicator -Server $server -Indicator $ioc -IncludeSubDomain -Type URL -FeedList $global:urloutnode -IndicatorList $global:urlindlist -BypassSSL
 								Write-Output $ioc >> $global:logfile
+								Write-Output ("*." + $ioc) >> $global:logfile
 							} catch {
 								Write-Output $_ >> $global:logfile
 							}
