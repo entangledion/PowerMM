@@ -30,8 +30,21 @@ if ($true) {
 	$cachefile_hosts = ($workingpath + "\cache_hosts.txt")
 	$cachefile_urls = ($workingpath + "\cache_urls.txt")
 	$cachefile_addr = ($workingpath + "\cache_addr.txt")
+	$logdir = ($workingpath + "\logs")
 	$file_iocs = ($workingpath + "\iocs.txt")
 }
+
+# Create log file directory if it doesn't exist
+$logdir_exists = test-path $logdir
+if ($logdir_exists -eq $false) {
+	New-Item -ItemType directory -Path $logdir
+}
+
+# Delete log files older than 30 day(s)
+$daysback = "-30"
+$currentdate = Get-Date
+$datetodelete = $currentdate.AddDays($daysback)
+Get-ChildItem $logdir | Where-Object { $_.LastWriteTime -lt $datetodelete } | Remove-Item
 
 # Set Dynamic Variables
 if ($true) {
@@ -115,6 +128,7 @@ function Cleanup {
 	$global:BackButtonState = $null
 	$global:dialogResult = $null
 	$global:Confirm = $null
+	$global:logfile = $null
 	
 	# Check for and cleanup leftover remenants of an aborted execution
 	$testpath_cleanup = Test-Path -Path $cachefile_iocs
@@ -674,11 +688,13 @@ function Add-Indicator {
                     $requestBody = $indicatorArr | ConvertTo-Json
                     $global:url = "https://" + $Server + "/config/data/" + $IndicatorList + "_indicators/append?h=" + $IndicatorList
                     $Response = Invoke-RestMethod $global:url -Method Post -Body $requestBody -ContentType 'application/json' -Headers $Headers
-                    Write-Output "The Following Indicator was added: $indicator"
+                    Write-Host "The Following Indicator was added: $indicator"
+					Write-Output "The Following Indicator was added: " >> $global:logfile
                 }
                 else
                 {
-                    Write-Output "The Following Indicator was skipped, already in the list: $indicator"
+                    Write-Host "The Following Indicator was skipped, already in the list: $indicator"
+                    Write-Output "The Following Indicator was skipped, already in the list: " >> $global:logfile
                 }
                 if ( "$Type" -eq "URL" )
                     {
@@ -843,7 +859,7 @@ function Ingest {
 			if (($global:var_indicators = Read-MultiLineInputBoxDialog -Message "Paste in attack indicators (IP, Domain, or URL)." -WindowTitle ("PowerMM v" + $version + " - Attack Indicators") -HelpText "Type or paste in a list of attack indicators (IP, Domain, or URL). The paste indicators box will accept unstructured text and will extract valid indicators automatically." -DefaultText $global:var_indicators -Required $true) -eq "") {
 				$global:var_indicators
 			}
-			
+				
 			# Prep indicators for submission
 			Invoke-Expression Build-Indicator-Files
 			
@@ -1016,16 +1032,19 @@ $addrarray"
 					
 				# Submit a new incident
 				$global:BackButtonAction = $false
-								
-				# Update Incident History File
+				
+				# Create and update incident history file
 				$incidenthist_exists = test-path $incident_history
 				if ($incidenthist_exists -eq $false) {
 						Write-Output "timestamp,name" > $incident_history
+				} else {
+						Write-Output  ("`n`r" + [string]$Timestamp + "," + [string]$global:var_incidentname) >> $incident_history
 				}
 				
-			    # To add date and time to the history file
-				$Timestamp = Get-Date -Format "yyyy-MM-ddThh:mm:sszzzz"
-				Write-Output  ("`n`r" + [string]$Timestamp + "," + [string]$global:var_incidentname) >> $incident_history
+				# Create and update detailed log files
+				$Timestamp = Get-Date -Format "yyyy-MM-ddThh-mm-sszz"
+				$global:logfile = ($logdir + "\log-" + $Timestamp + ".txt")
+				Write-Output $global:Comment >> $global:logfile
 				
 				# Create and associate the defined indicators
 				$testpath = Test-Path $cachefile_hosts
@@ -1033,9 +1052,19 @@ $addrarray"
 					$hosts = Get-Content $cachefile_hosts
 					foreach ($ioc in $hosts) {
 						if ($cb -eq "1") {
-							Add-Indicator -Server $server -Indicator $ioc -IncludeSubDomain -Type URL -FeedList $global:urloutnode -IndicatorList $global:urlindlist -BypassSSL
+							try {
+								Add-Indicator -Server $server -Indicator $ioc -IncludeSubDomain -Type URL -FeedList $global:urloutnode -IndicatorList $global:urlindlist -BypassSSL
+								Write-Output $ioc >> $global:logfile
+							} catch {
+								Write-Output $_ >> $global:logfile
+							}
 						} else {
-							Add-Indicator -Server $server -Indicator $ioc -Type URL -FeedList $global:urloutnode -IndicatorList $global:urlindlist -BypassSSL
+							try {
+								Add-Indicator -Server $server -Indicator $ioc -Type URL -FeedList $global:urloutnode -IndicatorList $global:urlindlist -BypassSSL
+								Write-Output $ioc >> $global:logfile
+							} catch {
+								Write-Output $_ >> $global:logfile
+							}
 						}
 					}
 				}
@@ -1044,7 +1073,12 @@ $addrarray"
 				if ($testpath -eq $true) {
 					$urls = Get-Content $cachefile_urls
 					foreach ($ioc in $urls) {
-						Add-Indicator -Server $server -Indicator $ioc -Type URL -FeedList $global:urloutnode -IndicatorList $global:urlindlist -BypassSSL
+						try {
+							Add-Indicator -Server $server -Indicator $ioc -Type URL -FeedList $global:urloutnode -IndicatorList $global:urlindlist -BypassSSL
+							Write-Output $ioc >> $global:logfile
+						} catch {
+							Write-Output $_ >> $global:logfile
+						}
 					}
 				}
 				
@@ -1052,7 +1086,13 @@ $addrarray"
 				if ($testpath -eq $true) {
 					$addr = Get-Content $cachefile_addr
 					foreach ($ioc in $addr) {
-						Add-Indicator -Server $server -Indicator $ioc -Type IPv4 -FeedList $ipv4outnode -IndicatorList $ipv4indlist -BypassSSL
+						try {
+							Add-Indicator -Server $server -Indicator $ioc -Type IPv4 -FeedList $ipv4outnode -IndicatorList $ipv4indlist -BypassSSL
+							Write-Output $ioc >> $global:logfile
+						} catch {
+							Write-Output $_ >> $global:logfile
+						}
+
 					}
 				}
 				
