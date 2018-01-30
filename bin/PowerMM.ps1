@@ -37,7 +37,7 @@ if ($true) {
 # Create log file directory if it doesn't exist
 $logdir_exists = test-path $logdir
 if ($logdir_exists -eq $false) {
-	New-Item -ItemType directory -Path $logdir
+	New-Item -ItemType directory -Path $logdir | Out-Null
 }
 
 # Delete log files older than 30 day(s)
