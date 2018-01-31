@@ -22,7 +22,7 @@ clear
 # Set Static Variables
 if ($true) {
 	$version = "1.2"
-	$logonas = $env:username # Do not modify
+	$global:logonas = $env:username # Do not modify
 	$invocation = (Get-Variable MyInvocation).Value
 	$workingpath = Split-Path $invocation.MyCommand.Path
 	$incident_history = ($workingpath + "\incident_history")
@@ -57,19 +57,19 @@ if ($true) {
 	}
 	[String]$server = Get-Content ($workingpath + "\server.conf")
 
-	# Securely stage or call API username
-	$accessid_exists = test-path ($workingpath + "\api_accessid-" + $logonas)
+	# Stage or call API username
+	$accessid_exists = test-path ($workingpath + "\api_accessid-" + $global:logonas)
 	if ($accessid_exists -eq $false) {
-		read-host -Prompt "Enter your MineMeld username" | out-file ($workingpath + "\api_accessid-" + $logonas)
+		read-host -Prompt "Enter your MineMeld username" | out-file ($workingpath + "\api_accessid-" + $global:logonas)
 	}
-	[String]$Script:AccessID = Get-Content ($workingpath + "\api_accessid-" + $logonas)
+	[String]$Script:AccessID = Get-Content ($workingpath + "\api_accessid-" + $global:logonas)
 
 	# Securely stage or call encrypted API password
-	$securestring_exists = test-path ($workingpath + "\api_securestring-" + $logonas)
+	$securestring_exists = test-path ($workingpath + "\api_securestring-" + $global:logonas)
 	if ($securestring_exists -eq $false) {
-		read-host -assecurestring -Prompt "Enter your MineMeld password" | convertfrom-securestring | out-file ($workingpath + "\api_securestring-" + $logonas)
+		read-host -assecurestring -Prompt "Enter your MineMeld password" | convertfrom-securestring | out-file ($workingpath + "\api_securestring-" + $global:logonas)
 	}
-	$encryptedpassword = Get-Content ($workingpath + "\api_securestring-" + $logonas) | ConvertTo-SecureString
+	$encryptedpassword = Get-Content ($workingpath + "\api_securestring-" + $global:logonas) | ConvertTo-SecureString
 	$BSTR = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($encryptedpassword)
 	[String]$Script:SecretKey = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($BSTR)
 
@@ -638,8 +638,6 @@ function Add-Indicator {
         
         If ($BypassSSL)
         {
-            #if (-not ([System.Management.Automation.PSTypeName]'TrustAllCertsPolicy').Type)
-            #{
                 add-type @"
                 using System.Net;
                 using System.Security.Cryptography.X509Certificates;
@@ -652,7 +650,6 @@ function Add-Indicator {
                 }
 "@
                 [System.Net.ServicePointManager]::CertificatePolicy = New-Object TrustAllCertsPolicy
-            #}
         }
         
 		# Variable used to the while loop needed to include a wildcard for subdomains
@@ -793,21 +790,18 @@ function Get-Indicator {
         
         If ($BypassSSL)
         {
-            #if (-not ([System.Management.Automation.PSTypeName]'TrustAllCertsPolicy').Type)
-            #{
-                add-type @"
-                using System.Net;
-                using System.Security.Cryptography.X509Certificates;
-                public class TrustAllCertsPolicy : ICertificatePolicy {
-                    public bool CheckValidationResult(
-                        ServicePoint srvPoint, X509Certificate certificate,
-                        WebRequest request, int certificateProblem) {
-                        return true;
-                    }
+            add-type @"
+            using System.Net;
+            using System.Security.Cryptography.X509Certificates;
+            public class TrustAllCertsPolicy : ICertificatePolicy {
+                public bool CheckValidationResult(
+                    ServicePoint srvPoint, X509Certificate certificate,
+                    WebRequest request, int certificateProblem) {
+                    return true;
                 }
+            }
 "@
-                [System.Net.ServicePointManager]::CertificatePolicy = New-Object TrustAllCertsPolicy
-            #}
+            [System.Net.ServicePointManager]::CertificatePolicy = New-Object TrustAllCertsPolicy
         }
     }
     Process
@@ -833,7 +827,28 @@ function Get-Indicator {
             }
             else
             {
-                $global:searchresult = "$indicator was found in $FeedList on MineMeld server $Server."
+				$array = $global:currentList.ParsedHtml.body.InnerText.split(" ")
+				$body = @()
+				foreach ($line in $array) {
+					$Indicator | ForEach-Object -Begin {$found = $false} {
+						$ind = $_.ToString()
+						If ($line -match $ind){
+							$found = $true
+						}
+						if ($found) {
+				        	$body += ($line + "`r`n")
+							$body = $body.Replace(" ","")
+				    	}
+					}
+				}
+				
+                $global:searchresult = "MATCH FOUND
+				
+""$indicator"" was found in Feed List ""$FeedList""
+
+MATCHING ENTRIES:
+
+$body"
             }
         }
         catch
@@ -870,19 +885,43 @@ function Main-Menu {
 	$MyGroupBox1.height = '100'
     $MyGroupBox1.text = "Select an option:"
     
-    # Create the collection of radio buttons
+	# Create a group that will contain your radio buttons
+    $MyGroupBox2 = New-Object System.Windows.Forms.GroupBox
+	$MyGroupBox2.AutoSize = $True
+	$MyGroupBox2.AutoSizeMode = "GrowAndShrink"
+    $MyGroupBox2.Location = '420,20'
+	$MyGroupBox2.height = '100'
+    $MyGroupBox2.text = "Managed Miners"
+	
+    # Create a collection of radio buttons
     $RadioButton1 = New-Object System.Windows.Forms.RadioButton
     $RadioButton1.AutoSize = $True
 	$RadioButton1.Location = '20,25'
     $RadioButton1.Checked = $true 
     $RadioButton1.Text = "Upload Indicators"
 
-    # Create the collection of radio buttons
+    # Create a collection of radio buttons
     $RadioButton2 = New-Object System.Windows.Forms.RadioButton
     $RadioButton2.AutoSize = $True
 	$RadioButton2.Location = '20,50'
     $RadioButton2.Checked = $false 
     $RadioButton2.Text = "Search Indicators"
+
+	# Create a collection of check boxes
+    $CheckBox1 = New-Object System.Windows.Forms.CheckBox
+    $CheckBox1.AutoSize = $True
+	$CheckBox1.Location = '20,25'
+    $CheckBox1.Checked = $true
+    $CheckBox1.Text = $urlindlist
+	$CheckBox1.Enabled = $false
+
+	# Create a collection of check boxes
+    $CheckBox2 = New-Object System.Windows.Forms.CheckBox
+    $CheckBox2.AutoSize = $True
+	$CheckBox2.Location = '20,50'
+    $CheckBox2.Checked = $true
+    $CheckBox2.Text = $ipv4indlist
+	$CheckBox2.Enabled = $false
 	
     # Add an OK button
     $okButton = new-object System.Windows.Forms.Button
@@ -891,7 +930,7 @@ function Main-Menu {
     $okButton.Text = 'GO'
     $okButton.DialogResult=[System.Windows.Forms.DialogResult]::OK
  
-    # Add a cancel button
+    # Add a Cancel button
     $CancelButton = new-object System.Windows.Forms.Button
     $CancelButton.Location = '170,120'
     $CancelButton.Size = '100,40'
@@ -911,11 +950,14 @@ function Main-Menu {
 	# Get ingestion history
 	$incidenthist_exists = test-path $incident_history
 	if ($incidenthist_exists -eq $true) {
-		$incident_hist_detail = Import-CSV -Path $incident_history | Sort-Object timestamp,name -Descending
+		$incident_hist_detail = Import-CSV -Path $incident_history | Sort-Object timestamp -Descending
 		$textbox.text = ("History:`n`r`n`r`n")
 		$hist_array = $null
 		foreach ($r in $incident_hist_detail) {
-			$hist_array = $hist_array + ("(" + $r.timestamp + ") - (" + $r.name + ")`n`r`n`r")
+			$tstamp = $r.timestamp
+			$user = $r.user
+			$desc = $r.desc
+			$hist_array = $hist_array + ("(" + $r.timestamp + ") - (" + $r.user + ") - (" + $r.desc + ")`n`r`n`r")
 		}
 		$textbox.AppendText($hist_array)
 	} else {
@@ -924,10 +966,11 @@ function Main-Menu {
 	}
 		
     # Add all the Form controls on one line
-    $form.Controls.AddRange(@($MyGroupBox1,$MyTextBox1,$okButton,$CancelButton,$textbox))
+    $form.Controls.AddRange(@($MyGroupBox1,$MyGroupBox2,$MyTextBox1,$okButton,$CancelButton,$textbox))
  
     # Add all the GroupBox controls on one line
-    $MyGroupBox1.Controls.AddRange(@($Radiobutton1,$RadioButton2,$RadioButton3))
+    $MyGroupBox1.Controls.AddRange(@($Radiobutton1,$RadioButton2))
+	$MyGroupBox2.Controls.AddRange(@($CheckBox1,$CheckBox2))
     
     # Assign the Accept and Cancel options in the form to the corresponding buttons
     $form.AcceptButton = $okButton
@@ -1118,7 +1161,7 @@ $addrarray"
 			    $BackButton.Text = "Back"
 			    $BackButton.Add_Click({ $form.Tag = $null; $global:BackButtonAction = $true; $form.Close() })
 			 
-			    # Add a cancel button
+			    # Add a Cancel button
 			    $CancelButton = new-object System.Windows.Forms.Button
 			    $CancelButton.Location = '170,430'
 			    $CancelButton.Size = '75,25'
@@ -1173,9 +1216,10 @@ $addrarray"
 				# Create and update incident history file
 				$incidenthist_exists = test-path $incident_history
 				if ($incidenthist_exists -eq $false) {
-						Write-Output "timestamp,name" > $incident_history
+						Write-Output "timestamp,user,desc" > $incident_history
+						Write-Output  ("`n`r" + $global:Timestamp + "," + $global:logonas + "," + [string]$global:var_incidentname) >> $incident_history
 				} else {
-						Write-Output  ("`n`r" + $global:Timestamp + "," + [string]$global:var_incidentname) >> $incident_history
+						Write-Output  ("`n`r" + $global:Timestamp + "," + $global:logonas + "," + [string]$global:var_incidentname) >> $incident_history
 				}
 				
 				# Create and associate the defined indicators
@@ -1296,7 +1340,7 @@ function Search {
 			    $Form = New-Object System.Windows.Forms.Form
 			    $Form.Text = "PowerMM - Confirmation"
 				$Form.StartPosition = "CenterScreen"
-				$Form.size = '580,260'
+				$Form.size = '580,440'
 			     
 				# Set the font of the text to be used within the form
 			    $Font = New-Object System.Drawing.Font("Arial",10)
@@ -1322,7 +1366,7 @@ function Search {
 				}
 				$textbox.AutoSize = $True
 				$textbox.Location = New-Object System.Drawing.Size(10,10)
-				$textbox.Size = New-Object System.Drawing.Size(500,160)
+				$textbox.Size = New-Object System.Drawing.Size(500,320)
 				$textbox.MultiLine = $True
 				$textbox.scrollbars = 'Both'
 				$textbox.wordwrap = $True
@@ -1332,9 +1376,9 @@ $global:searchresult"
 
 				$form.controls.add($textbox)
 	 
-			    # Add a cancel button
+			    # Add a Cancel button
 			    $CancelButton = new-object System.Windows.Forms.Button
-			    $CancelButton.Location = '10,180'
+			    $CancelButton.Location = '10,340'
 			    $CancelButton.Size = '75,25'
 			    $CancelButton.Text = "Cancel"
 			    $CancelButton.DialogResult=[System.Windows.Forms.DialogResult]::Cancel
