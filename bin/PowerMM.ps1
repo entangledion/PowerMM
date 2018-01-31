@@ -21,7 +21,7 @@ clear
 
 # Set Static Variables
 if ($true) {
-	$version = "1.1"
+	$version = "1.2"
 	$logonas = $env:username # Do not modify
 	$invocation = (Get-Variable MyInvocation).Value
 	$workingpath = Split-Path $invocation.MyCommand.Path
@@ -728,6 +728,124 @@ function Add-Indicator {
     }
 }
 
+function Get-Indicator {
+    <#
+    .SYNOPSIS
+        Search indicator feeds in MineMeld
+    .DESCRIPTION
+        This cmdlet can be utilized to return threat indicators listed in minemeld output feeds.
+        Mandatory functions for this function include; Server, FeedList, Type and Indicator.
+    .PARAMETER Server
+        This Parameter contains the ip-address or FQDN of the MineMeld server.
+        Parameter has no Default Value
+    .PARAMETER Indicator
+        This Parameter contains the Indicator to be searched.
+        Parameter has no Default Value
+    .PARAMETER Type
+        This Parameter contains the type of indicator to be searched on the MineMeld server (IPv4 or URL).
+        Parameter Default Value: URL
+    .PARAMETER FeedList
+        This Parameter contains the name of the output stream/list where the indicator should be searched.
+        Parameter Default Value: HC_URL_List
+    .PARAMETER BypassSSL
+        If this parameter is present self-signed certificate errors will be bypassed.
+    .EXAMPLE
+	    Get-Indicator -Server 192.168.1.10 -Indicator "172.16.12.21" -Type IPv4 -FeedList "mm_dc_list"
+        It will search "mm_dc_list" for the defined indicator "172.16.12.21".
+    #>
+    [CmdletBinding()]
+    Param(
+        [parameter(Mandatory=$true, 
+                   valueFromPipelineByPropertyName=$true, 
+                   HelpMessage="IP-Address or FQDN of MineMeld Server:",
+                   Position=0)]
+        [String]
+        $Server,
+        [parameter(Mandatory=$true, 
+                   valueFromPipelineByPropertyName=$true, 
+                   HelpMessage="IP-Address or FQDN of MineMeld Server:",
+                   Position=1)]
+        [String]
+        $FeedList = "Default_URL_List",
+        [parameter(Mandatory=$false, 
+                   valueFromPipelineByPropertyName=$true, 
+                   HelpMessage="Input node/list to search:",
+                   Position=4)]
+        [String]
+        $IndicatorList = "Default_Indicator_List",
+        [parameter(Mandatory=$false, 
+                   valueFromPipelineByPropertyName=$true, 
+                   HelpMessage="Indicator type (IPv4 or URL):",
+                   Position=3)]
+		[string]
+        $Indicator,
+        [parameter(Mandatory=$true, 
+                   valueFromPipelineByPropertyName=$true, 
+                   HelpMessage="Threat indicator to search for:",
+                   Position=2)]
+        [switch]
+        $BypassSSL
+    )
+    Begin
+    {	$global:url = ("https://" + $Server + "/feeds/" + $FeedList)
+		$global:currentList = Invoke-WebRequest -Uri $global:url -TimeoutSec 30
+        
+        If ($BypassSSL)
+        {
+            #if (-not ([System.Management.Automation.PSTypeName]'TrustAllCertsPolicy').Type)
+            #{
+                add-type @"
+                using System.Net;
+                using System.Security.Cryptography.X509Certificates;
+                public class TrustAllCertsPolicy : ICertificatePolicy {
+                    public bool CheckValidationResult(
+                        ServicePoint srvPoint, X509Certificate certificate,
+                        WebRequest request, int certificateProblem) {
+                        return true;
+                    }
+                }
+"@
+                [System.Net.ServicePointManager]::CertificatePolicy = New-Object TrustAllCertsPolicy
+            #}
+        }
+    }
+    Process
+    {
+        Try
+        {
+            $global:searchresult = $null
+			$Error.Clear()
+
+            #Credentials can be passed using basic authentication
+            #   * Simply base46 encode {username}:{password} and add that string to the headers
+            #   * Be sure to include the ':' between the strings
+            $userPass = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes("$($Script:AccessID):$($Script:SecretKey)"))
+            # Adding the Authentication string to the post request headers
+            $Headers = @{
+                Authorization = 'Basic ' +  $userPass
+            }
+			
+            # Search for indicator
+            if ( -not $global:currentList.Content.Contains($Indicator) )
+            {
+                $global:searchresult = "No results"
+            }
+            else
+            {
+                $global:searchresult = "$indicator was found in $FeedList on MineMeld server $Server."
+            }
+        }
+        catch
+        {
+
+        }
+    }
+    end
+    {
+        #Print function status and cleanup
+    }
+}
+
 function Main-Menu {
 
     [void] [System.Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms")
@@ -749,15 +867,22 @@ function Main-Menu {
 	$MyGroupBox1.AutoSizeMode = "GrowAndShrink"
     $MyGroupBox1.Location = '20,20'
 	$MyGroupBox1.height = '100'
-    $MyGroupBox1.text = "Please select an option:"
+    $MyGroupBox1.text = "Select an option:"
     
     # Create the collection of radio buttons
     $RadioButton1 = New-Object System.Windows.Forms.RadioButton
     $RadioButton1.AutoSize = $True
 	$RadioButton1.Location = '20,25'
     $RadioButton1.Checked = $true 
-    $RadioButton1.Text = "Upload Indicators to MineMeld"
+    $RadioButton1.Text = "Upload Indicators"
 
+    # Create the collection of radio buttons
+    $RadioButton2 = New-Object System.Windows.Forms.RadioButton
+    $RadioButton2.AutoSize = $True
+	$RadioButton2.Location = '20,50'
+    $RadioButton2.Checked = $false 
+    $RadioButton2.Text = "Search Indicators"
+	
     # Add an OK button
     $okButton = new-object System.Windows.Forms.Button
 	$okButton.Location = '50,120'
@@ -825,6 +950,10 @@ function Main-Menu {
         if ($RadioButton1.Checked){
 			$global:abortdialog = $false
         	Invoke-Expression Ingest
+		}
+		if ($RadioButton2.Checked){
+			$global:abortdialog = $false
+        	Invoke-Expression Search
 		}
     }
 }
@@ -1113,6 +1242,127 @@ $addrarray"
 		}
 	} else {
 		Invoke-Expression Cleanup
+		Invoke-Expression Main-Menu
+		break
+	}
+}
+
+function Search {
+
+	$global:var_prop_value = $null
+
+	# Prompt for Search Query
+	if ($global:abortdialog -ne $true) {
+		function Get-Query {
+			$global:var_prop_value = "query"
+			if (($global:var_searchquery = Read-SingleLineInputBoxDialog -Message "Search for indicator:" -WindowTitle ("PowerMM v" + $version + " - Search Query") -HelpText "Enter an indicator to perform a search on." -DefaultText $global:var_searchquery -Required $true -CheckboxID "2") -eq "") {
+			}
+		}
+		Invoke-Expression Get-Query
+		$global:BackButtonAction = $false
+	} else {
+		Invoke-Expression Main-Menu
+	}
+	
+	# Confirm and Execute Search Query Logic
+	if ($global:abortdialog -ne $true) {
+		Get-Indicator -Server $Server -Indicator $global:var_searchquery -Type IPv4 -FeedList $ipv4outnode -BypassSSL
+		
+		if ($global:searchresult -ne "No Results") {
+			Write-Host $global:searchresult
+		} else {
+			Get-Indicator -Server $Server -Indicator $global:var_searchquery -Type URL -FeedList $urloutnode -BypassSSL
+			if ($global:searchresult -ne "No Results") {
+				Write-Host $global:searchresult
+			} else {
+				Write-Host $global:searchresult
+			}
+		}
+	
+		# Display query results detail page
+		if ($global:abortdialog -ne $true) {
+			function Get-QueryResults {
+				
+				[void] [System.Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms")
+			    [void] [System.Reflection.Assembly]::LoadWithPartialName("System.Drawing") 
+				
+				# Set the size of the form
+			    $Form = New-Object System.Windows.Forms.Form
+			    $Form.Text = "PowerMM - Confirmation"
+				$Form.StartPosition = "CenterScreen"
+				$Form.size = '580,520'
+			     
+				# Set the font of the text to be used within the form
+			    $Font = New-Object System.Drawing.Font("Arial",10)
+			    $Form.Font = $Font
+				
+				# Display Instructions
+				$textbox = New-Object Windows.Forms.TextBox
+				if ($global:var_prop_value -eq $null) {
+					$textbox.add_TextChanged({ $okButton.Enabled = $true })
+				}
+				$textbox.AutoSize = $True
+				$textbox.Location = New-Object System.Drawing.Size(10,10)
+				$textbox.Size = New-Object System.Drawing.Size(500,400)
+				$textbox.MultiLine = $True
+				$textbox.scrollbars = 'Both'
+				$textbox.wordwrap = $True
+				$textbox.readonly = $True
+				$textbox.text = "
+$global:searchresult"
+
+				$form.controls.add($textbox)
+	 
+			    # Add a cancel button
+			    $CancelButton = new-object System.Windows.Forms.Button
+			    $CancelButton.Location = '170,430'
+			    $CancelButton.Size = '75,25'
+			    $CancelButton.Text = "Cancel"
+			    $CancelButton.DialogResult=[System.Windows.Forms.DialogResult]::Cancel
+				$CancelButton.Add_Click({ $global:abortdialog = $true; $form.Tag = $null; $form.Close() })
+			 
+			    # Add all the Form controls on one line 
+			    $form.Controls.AddRange(@($CancelButton))
+			 
+			    # Assign the Accept and Cancel options in the form to the corresponding buttons
+			    $form.AcceptButton = $CancelButton
+			    $form.CancelButton = $CancelButton
+			 
+			    # Activate the form
+			    $form.Add_Shown({$form.Activate()})
+				
+				# Get the results from the button click
+		    	$global:Confirm = $form.ShowDialog()
+				
+				$global:BackButtonState = $true
+									
+				while ($global:BackButtonAction -eq $true) {
+					if ($global:abortdialog -ne $true) {
+						Invoke-Expression Get-Query
+						$global:BackButtonAction = $false
+						if ($global:abortdialog -ne $true) {
+							if ($global:var_prop_value -eq "query") {
+								Invoke-Expression Get-QueryResults
+								$global:BackButtonAction = $false
+							}
+						}
+					}
+				}
+			}
+			Invoke-Expression Get-QueryResults
+			$global:BackButtonAction = $false
+			
+			# if the Cancel button is selected
+			if ($global:Confirm -eq "Cancel"){
+				Write-Host -ForegroundColor Green "Returning to the Main Menu.."
+				Invoke-Expression Main-Menu
+				break
+			}
+		} else {
+			Invoke-Expression Main-Menu
+			break
+		}
+	} else {
 		Invoke-Expression Main-Menu
 		break
 	}
