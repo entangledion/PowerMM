@@ -21,7 +21,7 @@ clear
 
 # Set Static Variables
 if ($true) {
-	$version = "1.2"
+	$version = "1.1"
 	$logonas = $env:username # Do not modify
 	$invocation = (Get-Variable MyInvocation).Value
 	$workingpath = Split-Path $invocation.MyCommand.Path
@@ -769,10 +769,11 @@ function Get-Indicator {
         $FeedList = "Default_URL_List",
         [parameter(Mandatory=$false, 
                    valueFromPipelineByPropertyName=$true, 
-                   HelpMessage="Input node/list to search:",
-                   Position=4)]
-        [String]
-        $IndicatorList = "Default_Indicator_List",
+                   HelpMessage="Indicator type (IPv4 or URL):",
+                   Position=1)]
+        [string]
+        [validateSet("IPv4","URL")]
+        $Type = "URL",
         [parameter(Mandatory=$false, 
                    valueFromPipelineByPropertyName=$true, 
                    HelpMessage="Indicator type (IPv4 or URL):",
