@@ -408,7 +408,7 @@ function Read-SingleLineInputBoxDialog([string]$Message, [string]$WindowTitle, [
 	
 	# Create the Back button.
     $BackButton = New-Object System.Windows.Forms.Button
-	if ($global:var_prop_value -ne $null -and $global:var_prop_value -ne "incident") {
+	if ($global:var_prop_value -ne $null -and $global:var_prop_value -ne "incident" -and $global:var_prop_value -ne "query") {
 		$BackButton.Enabled = $true
 	} else {
 		$BackButton.Enabled = $false
