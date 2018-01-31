@@ -633,7 +633,7 @@ function Add-Indicator {
         $IncludeSubDomain
     )
     Begin
-    {	$global:url =  "https://" + $Server + "/feeds/" + $FeedList
+    {	$global:url =  "https://" + $Server + "/feeds/" + $FeedList + "?tr=1"
 		$global:currentList = Invoke-WebRequest $global:url -TimeoutSec 30
         
         If ($BypassSSL)
@@ -788,7 +788,7 @@ function Get-Indicator {
         $BypassSSL
     )
     Begin
-    {	$global:url = ("https://" + $Server + "/feeds/" + $FeedList)
+    {	$global:url = ("https://" + $Server + "/feeds/" + $FeedList + "?tr=1")
 		$global:currentList = Invoke-WebRequest -Uri $global:url -TimeoutSec 30
         
         If ($BypassSSL)
@@ -1291,7 +1291,7 @@ function Search {
 			    $Form = New-Object System.Windows.Forms.Form
 			    $Form.Text = "PowerMM - Confirmation"
 				$Form.StartPosition = "CenterScreen"
-				$Form.size = '580,220'
+				$Form.size = '580,260'
 			     
 				# Set the font of the text to be used within the form
 			    $Font = New-Object System.Drawing.Font("Arial",10)
@@ -1316,7 +1316,7 @@ $global:searchresult"
 	 
 			    # Add a cancel button
 			    $CancelButton = new-object System.Windows.Forms.Button
-			    $CancelButton.Location = '170,430'
+			    $CancelButton.Location = '10,180'
 			    $CancelButton.Size = '75,25'
 			    $CancelButton.Text = "Cancel"
 			    $CancelButton.DialogResult=[System.Windows.Forms.DialogResult]::Cancel
