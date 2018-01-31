@@ -493,6 +493,7 @@ function Build-Indicator-Files {
 			$ioc = $ioc.replace("}","")
 			Write-Output $ioc >> $cachefile_iocs
 		}
+		
 		# Loop Hostname indicator regex pattern through import file
 		$input_file = $cachefile_iocs
 		$output_file = $file_iocs
@@ -1035,7 +1036,7 @@ function Ingest {
 			if ($global:var_indicators -eq $null) {
 				$global:BackButtonState = $null
 			}
-			if (($global:var_indicators = Read-MultiLineInputBoxDialog -Message "Paste in attack indicators (IP, Domain, or URL)." -WindowTitle ("PowerMM v" + $version + " - Attack Indicators") -HelpText "Type or paste in a list of attack indicators (IP, Domain, or URL). The paste indicators box will accept unstructured text and will extract valid indicators automatically." -DefaultText $global:var_indicators -Required $true) -eq "") {
+			if (($global:var_indicators = Read-MultiLineInputBoxDialog -Message "Paste in attack indicators (IP, Domain, or URL)." -WindowTitle ("PowerMM v" + $version + " - Attack Indicators") -HelpText "Type or paste in a list of attack indicators (IP, Domain, or URL)." -DefaultText $global:var_indicators -Required $true) -eq "") {
 				$global:var_indicators
 			}
 				
