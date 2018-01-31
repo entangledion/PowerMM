@@ -64,7 +64,7 @@ if ($true) {
 	}
 	[String]$Script:AccessID = Get-Content ($workingpath + "\api_accessid-" + $logonas)
 
-	# Securely stage or call API password
+	# Securely stage or call encrypted API password
 	$securestring_exists = test-path ($workingpath + "\api_securestring-" + $logonas)
 	if ($securestring_exists -eq $false) {
 		read-host -assecurestring -Prompt "Enter your MineMeld password" | convertfrom-securestring | out-file ($workingpath + "\api_securestring-" + $logonas)
