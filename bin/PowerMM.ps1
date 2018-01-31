@@ -1125,21 +1125,21 @@ function Ingest {
 				$textbox.scrollbars = 'Both'
 				$textbox.wordwrap = $True
 				$textbox.readonly = $True
-				$textbox.text = "(Description):
+				$textbox.text = "DESCRIPTION:
 
-$global:Comment
+    $global:Comment
 
-(Domains):
+DOMAINS:
 
-$domainarray
+    $domainarray
 
-(URLs):
+URLS:
 
-$urlarray
+    $urlarray
 
-(IPv4 Addresses):
+IPV4 ADDRESSES:
 
-$addrarray"
+    $addrarray"
 
 				$form.controls.add($textbox)
 
@@ -1324,16 +1324,8 @@ function Search {
 	# Confirm and Execute Search Query Logic
 	if ($global:abortdialog -ne $true) {
 		Get-Indicator -Server $Server -Indicator $global:var_searchquery -Type IPv4 -FeedList $ipv4outnode -BypassSSL
-		
-		if ($global:searchresult -ne "Nothing Found") {
-			Write-Host $global:searchresult
-		} else {
+		if ($global:searchresult -eq "Nothing Found") {
 			Get-Indicator -Server $Server -Indicator $global:var_searchquery -Type URL -FeedList $urloutnode -BypassSSL
-			if ($global:searchresult -ne "Nothing Found") {
-				Write-Host $global:searchresult
-			} else {
-				Write-Host $global:searchresult
-			}
 		}
 	
 		# Display query results detail page
