@@ -896,9 +896,17 @@ function Main-Menu {
     $MyGroupBox2 = New-Object System.Windows.Forms.GroupBox
 	$MyGroupBox2.AutoSize = $True
 	$MyGroupBox2.AutoSizeMode = "GrowAndShrink"
-    $MyGroupBox2.Location = '420,20'
+    $MyGroupBox2.Location = '320,20'
 	$MyGroupBox2.height = '100'
     $MyGroupBox2.text = "Managed Miners"
+	
+	# Create a group that will contain your radio buttons
+    $MyGroupBox3 = New-Object System.Windows.Forms.GroupBox
+	$MyGroupBox3.AutoSize = $True
+	$MyGroupBox3.AutoSizeMode = "GrowAndShrink"
+    $MyGroupBox3.Location = '320,120'
+	$MyGroupBox3.height = '20'
+    $MyGroupBox3.text = "Attached To"
 	
     # Create a collection of radio buttons
     $RadioButton1 = New-Object System.Windows.Forms.RadioButton
@@ -924,22 +932,32 @@ function Main-Menu {
 
 	# Create a collection of check boxes
     $CheckBox2 = New-Object System.Windows.Forms.CheckBox
-    $CheckBox2.AutoSize = $True
+    #$CheckBox2.AutoSize = $True
+	$CheckBox2.Size = '235,20'
 	$CheckBox2.Location = '20,50'
     $CheckBox2.Checked = $true
     $CheckBox2.Text = $ipv4indlist
 	$CheckBox2.Enabled = $false
+
+	# Create a collection of check boxes
+    $CheckBox3 = New-Object System.Windows.Forms.CheckBox
+    #$CheckBox3.AutoSize = $True
+	$CheckBox3.Size = '235,20'
+	$CheckBox3.Location = '20,20'
+    $CheckBox3.Checked = $true
+    $CheckBox3.Text = $server
+	$CheckBox3.Enabled = $false
 	
     # Add an OK button
     $okButton = new-object System.Windows.Forms.Button
-	$okButton.Location = '50,120'
+	$okButton.Location = '20,130'
     $okButton.Size = '100,40'
     $okButton.Text = 'GO'
     $okButton.DialogResult=[System.Windows.Forms.DialogResult]::OK
  
     # Add a Cancel button
     $CancelButton = new-object System.Windows.Forms.Button
-    $CancelButton.Location = '170,120'
+    $CancelButton.Location = '140,130'
     $CancelButton.Size = '100,40'
     $CancelButton.Text = "EXIT"
     $CancelButton.DialogResult=[System.Windows.Forms.DialogResult]::Cancel
@@ -947,7 +965,7 @@ function Main-Menu {
 	# Display Instructions
 	$textbox = New-Object Windows.Forms.TextBox
 	$textbox.AutoSize = $True
-	$textbox.Location = '20,180'
+	$textbox.Location = '20,195'
 	$textbox.Size = '560,160'
 	$textbox.MultiLine = $True
 	$textbox.scrollbars = 'Both'
@@ -973,12 +991,13 @@ function Main-Menu {
 	}
 		
     # Add all the Form controls on one line
-    $form.Controls.AddRange(@($MyGroupBox1,$MyGroupBox2,$MyTextBox1,$okButton,$CancelButton,$textbox))
+    $form.Controls.AddRange(@($MyGroupBox1,$MyGroupBox2,$MyGroupBox3,$MyTextBox1,$okButton,$CancelButton,$textbox))
  
     # Add all the GroupBox controls on one line
     $MyGroupBox1.Controls.AddRange(@($Radiobutton1,$RadioButton2))
 	$MyGroupBox2.Controls.AddRange(@($CheckBox1,$CheckBox2))
-    
+    $MyGroupBox3.Controls.AddRange(@($CheckBox3))
+	
     # Assign the Accept and Cancel options in the form to the corresponding buttons
     $form.AcceptButton = $okButton
     $form.CancelButton = $CancelButton
