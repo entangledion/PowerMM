@@ -21,7 +21,7 @@ clear
 
 # Set Static Variables
 if ($true) {
-	$version = "1.1"
+	$version = "1.2"
 	$logonas = $env:username # Do not modify
 	$invocation = (Get-Variable MyInvocation).Value
 	$workingpath = Split-Path $invocation.MyCommand.Path
@@ -829,7 +829,7 @@ function Get-Indicator {
             # Search for indicator
             if ( -not $global:currentList.Content.Contains($Indicator) )
             {
-                $global:searchresult = "No results"
+                $global:searchresult = "Nothing Found"
             }
             else
             {
@@ -1269,11 +1269,11 @@ function Search {
 	if ($global:abortdialog -ne $true) {
 		Get-Indicator -Server $Server -Indicator $global:var_searchquery -Type IPv4 -FeedList $ipv4outnode -BypassSSL
 		
-		if ($global:searchresult -ne "No Results") {
+		if ($global:searchresult -ne "Nothing Found") {
 			Write-Host $global:searchresult
 		} else {
 			Get-Indicator -Server $Server -Indicator $global:var_searchquery -Type URL -FeedList $urloutnode -BypassSSL
-			if ($global:searchresult -ne "No Results") {
+			if ($global:searchresult -ne "Nothing Found") {
 				Write-Host $global:searchresult
 			} else {
 				Write-Host $global:searchresult
@@ -1291,7 +1291,7 @@ function Search {
 			    $Form = New-Object System.Windows.Forms.Form
 			    $Form.Text = "PowerMM - Confirmation"
 				$Form.StartPosition = "CenterScreen"
-				$Form.size = '580,520'
+				$Form.size = '580,220'
 			     
 				# Set the font of the text to be used within the form
 			    $Font = New-Object System.Drawing.Font("Arial",10)
@@ -1304,7 +1304,7 @@ function Search {
 				}
 				$textbox.AutoSize = $True
 				$textbox.Location = New-Object System.Drawing.Size(10,10)
-				$textbox.Size = New-Object System.Drawing.Size(500,400)
+				$textbox.Size = New-Object System.Drawing.Size(500,160)
 				$textbox.MultiLine = $True
 				$textbox.scrollbars = 'Both'
 				$textbox.wordwrap = $True
