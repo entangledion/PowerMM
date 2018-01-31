@@ -638,6 +638,8 @@ function Add-Indicator {
         
         If ($BypassSSL)
         {
+            #if (-not ([System.Management.Automation.PSTypeName]'TrustAllCertsPolicy').Type)
+            #{
                 add-type @"
                 using System.Net;
                 using System.Security.Cryptography.X509Certificates;
@@ -650,6 +652,7 @@ function Add-Indicator {
                 }
 "@
                 [System.Net.ServicePointManager]::CertificatePolicy = New-Object TrustAllCertsPolicy
+            #}
         }
         
 		# Variable used to the while loop needed to include a wildcard for subdomains
@@ -790,18 +793,21 @@ function Get-Indicator {
         
         If ($BypassSSL)
         {
-            add-type @"
-            using System.Net;
-            using System.Security.Cryptography.X509Certificates;
-            public class TrustAllCertsPolicy : ICertificatePolicy {
-                public bool CheckValidationResult(
-                    ServicePoint srvPoint, X509Certificate certificate,
-                    WebRequest request, int certificateProblem) {
-                    return true;
+            #if (-not ([System.Management.Automation.PSTypeName]'TrustAllCertsPolicy').Type)
+            #{
+                add-type @"
+                using System.Net;
+                using System.Security.Cryptography.X509Certificates;
+                public class TrustAllCertsPolicy : ICertificatePolicy {
+                    public bool CheckValidationResult(
+                        ServicePoint srvPoint, X509Certificate certificate,
+                        WebRequest request, int certificateProblem) {
+                        return true;
+                    }
                 }
-            }
 "@
-            [System.Net.ServicePointManager]::CertificatePolicy = New-Object TrustAllCertsPolicy
+                [System.Net.ServicePointManager]::CertificatePolicy = New-Object TrustAllCertsPolicy
+            #}
         }
     }
     Process
