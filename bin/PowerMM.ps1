@@ -110,7 +110,7 @@ if ($true) {
 if ($true) {
 	$regexhost = '(?=^.{4,253}$)(^((?!-)[a-zA-Z0-9-]{1,63}(?<!-)\.)+[a-zA-Z]{2,63}$)'
 	$regexurl = '(?i:\b(?:(?:https?|ftp):\/\/)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,}))\.?)(?::\d{2,5})?(?:[/?#]\S*)?\b)'
-	$regexaddr = '\b(?!(10\.|172\.(1[6-9]|2[0-9]|3[0-2])|192\.168))(?:(?:2(?:[0-4][0-9]|5[0-5])|[0-1]?[0-9]?[0-9])\.){3}(?:(?:2([0-4][0-9]|5[0-5])|[0-1]?[0-9]?[0-9]))\b'
+	$regexaddr = '^\b(?!(10\.|172\.(1[6-9]|2[0-9]|3[0-2])|192\.168))(?:(?:2(?:[0-4][0-9]|5[0-5])|[0-1]?[0-9]?[0-9])\.){3}(?:(?:2([0-4][0-9]|5[0-5])|[0-1]?[0-9]?[0-9])){1,3}($|\/([0-9]|[1-2][0-9]|3[0-2]))?\b$'
 	$regexemailaddr = '\b+[a-zA-Z0-9\.\-_]+@[a-zA-Z0-9\.\-]+\.[a-zA-Z0-9\.\-]+\b'
 	$regexfilehash_md5 = '\b([a-fA-F\d]{32})\b'
 	$regexfilehash_sha1 = '\b([a-fA-F\d]{40})\b'
@@ -886,45 +886,51 @@ function Main-Menu {
 	
 	# Create a group that will contain your radio buttons
     $MyGroupBox1 = New-Object System.Windows.Forms.GroupBox
-	$MyGroupBox1.AutoSize = $True
-	$MyGroupBox1.AutoSizeMode = "GrowAndShrink"
+	#$MyGroupBox1.AutoSize = $True
+	#$MyGroupBox1.AutoSizeMode = "GrowAndShrink"
+	$MyGroupBox1.Size = '220,40'
     $MyGroupBox1.Location = '20,20'
-	$MyGroupBox1.height = '100'
+	$MyGroupBox1.height = '90'
     $MyGroupBox1.text = "Select an option:"
     
 	# Create a group that will contain your radio buttons
     $MyGroupBox2 = New-Object System.Windows.Forms.GroupBox
-	$MyGroupBox2.AutoSize = $True
-	$MyGroupBox2.AutoSizeMode = "GrowAndShrink"
+	#$MyGroupBox2.AutoSize = $True
+	#$MyGroupBox2.AutoSizeMode = "GrowAndShrink"
+	$MyGroupBox2.Size = '260,40'
     $MyGroupBox2.Location = '320,20'
-	$MyGroupBox2.height = '100'
+	$MyGroupBox2.height = '90'
     $MyGroupBox2.text = "Managed Miners"
 	
 	# Create a group that will contain your radio buttons
     $MyGroupBox3 = New-Object System.Windows.Forms.GroupBox
-	$MyGroupBox3.AutoSize = $True
-	$MyGroupBox3.AutoSizeMode = "GrowAndShrink"
-    $MyGroupBox3.Location = '320,120'
-	$MyGroupBox3.height = '20'
+	#$MyGroupBox3.AutoSize = $True
+	#$MyGroupBox3.AutoSizeMode = "GrowAndShrink"
+	$MyGroupBox3.Size = '260,40'
+    $MyGroupBox3.Location = '320,125'
+	$MyGroupBox3.height = '50'
     $MyGroupBox3.text = "Attached To"
 	
     # Create a collection of radio buttons
     $RadioButton1 = New-Object System.Windows.Forms.RadioButton
-    $RadioButton1.AutoSize = $True
+    #$RadioButton1.AutoSize = $True
+	$RadioButton1.Size = '140,20'
 	$RadioButton1.Location = '20,25'
     $RadioButton1.Checked = $true 
     $RadioButton1.Text = "Upload Indicators"
 
     # Create a collection of radio buttons
     $RadioButton2 = New-Object System.Windows.Forms.RadioButton
-    $RadioButton2.AutoSize = $True
-	$RadioButton2.Location = '20,50'
+    #$RadioButton2.AutoSize = $True
+	$RadioButton2.Size = '140,20'
+	$RadioButton2.Location = '20,45'
     $RadioButton2.Checked = $false 
     $RadioButton2.Text = "Search Indicators"
 
 	# Create a collection of check boxes
     $CheckBox1 = New-Object System.Windows.Forms.CheckBox
-    $CheckBox1.AutoSize = $True
+    #$CheckBox1.AutoSize = $True
+	$CheckBox1.Size = '235,20'
 	$CheckBox1.Location = '20,25'
     $CheckBox1.Checked = $true
     $CheckBox1.Text = $urlindlist
@@ -934,7 +940,7 @@ function Main-Menu {
     $CheckBox2 = New-Object System.Windows.Forms.CheckBox
     #$CheckBox2.AutoSize = $True
 	$CheckBox2.Size = '235,20'
-	$CheckBox2.Location = '20,50'
+	$CheckBox2.Location = '20,45'
     $CheckBox2.Checked = $true
     $CheckBox2.Text = $ipv4indlist
 	$CheckBox2.Enabled = $false
@@ -1055,7 +1061,7 @@ function Ingest {
 			if ($global:var_indicators -eq $null) {
 				$global:BackButtonState = $null
 			}
-			if (($global:var_indicators = Read-MultiLineInputBoxDialog -Message "Paste in attack indicators (IP, Domain, or URL)." -WindowTitle ("PowerMM v" + $version + " - Attack Indicators") -HelpText "Type or paste in a list of attack indicators (IP, Domain, or URL)." -DefaultText $global:var_indicators -Required $true) -eq "") {
+			if (($global:var_indicators = Read-MultiLineInputBoxDialog -Message "Paste in attack indicators (IP, CIDR, Domain, or URL)." -WindowTitle ("PowerMM v" + $version + " - Attack Indicators") -HelpText "Type or paste in a list of attack indicators (IP, CIDR, Domain, or URL)." -DefaultText $global:var_indicators -Required $true) -eq "") {
 				$global:var_indicators
 			}
 				
@@ -1327,7 +1333,7 @@ function Search {
 	if ($global:abortdialog -ne $true) {
 		function Get-Query {
 			$global:var_prop_value = "query"
-			if (($global:var_searchquery = Read-SingleLineInputBoxDialog -Message "Search for indicator:" -WindowTitle ("PowerMM v" + $version + " - Search Query") -HelpText "In 100 characters or less, enter an IP, Domain, or URL to perform a search on." -DefaultText $global:var_searchquery -Required $true -CheckboxID "2") -eq "") {
+			if (($global:var_searchquery = Read-SingleLineInputBoxDialog -Message "Search for indicator:" -WindowTitle ("PowerMM v" + $version + " - Search Query") -HelpText "In 100 characters or less, enter an IP, CIRD, Domain, or URL to perform a search on." -DefaultText $global:var_searchquery -Required $true -CheckboxID "2") -eq "") {
 			}
 		if ($global:BackButtonState -eq $true) {
 			$global:BackButtonState = $false
