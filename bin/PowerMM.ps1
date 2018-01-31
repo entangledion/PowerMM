@@ -1251,13 +1251,18 @@ $addrarray"
 function Search {
 
 	$global:var_prop_value = $null
-
+	$global:var_searchquery = $null
+	
 	# Prompt for Search Query
 	if ($global:abortdialog -ne $true) {
 		function Get-Query {
 			$global:var_prop_value = "query"
-			if (($global:var_searchquery = Read-SingleLineInputBoxDialog -Message "Search for indicator:" -WindowTitle ("PowerMM v" + $version + " - Search Query") -HelpText "Enter an indicator to perform a search on." -DefaultText $global:var_searchquery -Required $true -CheckboxID "2") -eq "") {
+			if (($global:var_searchquery = Read-SingleLineInputBoxDialog -Message "Search for indicator:" -WindowTitle ("PowerMM v" + $version + " - Search Query") -HelpText "In 100 characters or less, enter an IP, Domain, or URL to perform a search on." -DefaultText $global:var_searchquery -Required $true -CheckboxID "2") -eq "") {
 			}
+		if ($global:BackButtonState -eq $true) {
+			$global:BackButtonState = $false
+			Invoke-Expression Main-Menu
+		}
 		}
 		Invoke-Expression Get-Query
 		$global:BackButtonAction = $false
@@ -1299,6 +1304,19 @@ function Search {
 				
 				# Display Instructions
 				$textbox = New-Object Windows.Forms.TextBox
+				$textbox.add_TextChanged({IsThereText})
+				function IsThereText
+				{
+					if ($textbox.Text.Length -ne 0)
+					{
+						$okButton.Enabled = $true
+					}
+					else
+					{
+						$okButton.Enabled = $false
+					}
+				}
+				$textBox.add_TextChanged({ IsThereText })
 				if ($global:var_prop_value -eq $null) {
 					$textbox.add_TextChanged({ $okButton.Enabled = $true })
 				}
@@ -1335,7 +1353,7 @@ $global:searchresult"
 				# Get the results from the button click
 		    	$global:Confirm = $form.ShowDialog()
 				
-				$global:BackButtonState = $true
+				#$global:BackButtonState = $true
 									
 				while ($global:BackButtonAction -eq $true) {
 					if ($global:abortdialog -ne $true) {
