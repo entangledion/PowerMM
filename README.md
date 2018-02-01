@@ -32,7 +32,7 @@ Instructions:
       - Example: minemeld.acme.corp
     - Your MineMeld username
     - Your MineMeld password
-      - Note: MM Password is cached to disk using AES standard Powershell SecureString encryption
+      - Note: The MM Password is cached to disk using AES standard Powershell SecureString encryption
     - The URL node type (Miner) name that you want to update 
       - Example: Acme_URL_Blocklist (the "Miner" Node name shown under the "Config" tab in MineMeld)
     - An associated URL output feed name (so the script can check it for duplicate indicators)
