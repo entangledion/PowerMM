@@ -16,7 +16,6 @@ Features:
 - Performs duplicate indicator check prior to upload to prevent duplication of addresses.
 - Search option to spot-check the configured Output node/feed URLs for specific indicators or keywords.
 - Multi-user support with shared upload history tracking if used from a mapped network drive.
-- Secure storage of MM username/password credentials using built-in Powershell SecureString encryption.
 
 Known Limitations:
 
