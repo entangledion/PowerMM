@@ -45,7 +45,7 @@ Instructions:
       - Example: Corresponds to https://minemeld.acme.corp/feeds/inboundfeedhc_ipv4
 - At the main menu, click "GO"
 - Enter a description of the indicators you want to upload, then click Next
-- Type or paste in a list of indicators (IP, Domain Name, or URL)
+- Type or paste in a list of indicators (IP, CIDR, Domain Name, or URL)
 - Optionally, check or uncheck the box "Create wildcard entries for domains"
 - Click Next
 - Review the summary information for accuracy, click Back to make changes, or Confirm to start the upload
