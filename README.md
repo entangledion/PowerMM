@@ -1,16 +1,16 @@
 # PowerMM
-A Powershell-based graphical user interface utility to quickly paste in a list of indicators and upload to MineMeld Miners. Useful if you maintain custom firewall IP and URL dynamic blocklists in MineMeld. Additional functionality may be added over time.
+A Powershell-based graphical user interface MineMeld utility. Additional functionality may be added over time.
 
 Currently the script supports uploading the following types of indicators:
 
-- IPv4
+- IPv4 (IP/CIDR)
 - Domain
 - URL
 
 Features:
 
-- Rapid indicator ingestion into custom IPv4 & URL MineMeld Miners (nodes).
-- Can upload a combined list of IPv4, Domain Name, and URL indicators to multiple miners in a single pass.
+- Rapid indicator ingestion into custom IPv4 & URL MineMeld Miners (nodes). Useful if you maintain custom firewall IP and URL blocklists in MineMeld.
+- Can upload a combined list of IPV4, CIDR, Domain Name, and URL indicators to multiple miners in a single pass.
 - Option to automatically create wildcard variants of uploaded domain names.
 - Automatically stamps indicator descriptions with the user that uploaded it, and date stamp.
 - Performs duplicate indicator check prior to upload to prevent duplication of addresses.
