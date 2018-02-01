@@ -1,5 +1,5 @@
 # PowerMM
-A Powershell-based graphical user interface MineMeld utility. Additional functionality may be added over time.
+A Powershell-based graphical user interface utility for MineMeld. Additional functionality may be added over time.
 
 Currently the script supports uploading the following types of indicators:
 
