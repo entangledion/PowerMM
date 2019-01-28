@@ -22,21 +22,12 @@ Release Notes:
 
 New in v2.4 :
 - Code review, sanitation, and cleanup
-
-New in v2.3 :
+- New Feature: You can now ingest IPv4 CIDR Blocks.
 - New button on main menu to view the release notes.
-- Ingest IOC window now requires use of http:// or https:// when adding URL's.
-
-New in v2.2 :
 - New button on main menu to view the log file of your last action.
 - New colors to help indicate action result status in the Powershell console window.
-
-New in v2.1
-- Bug Fix: IOC Search Deletion option is now working again.
-- Bug Fix: TC ingestion option is now working again.
-
-New in v1.9
-- New Feature: You can now ingest IPv4 CIDR Blocks.
+- Ingest IOC window now requires use of http:// or https:// when adding URL's.
+- ThreatConnect Threat Intelligence Platform support.
 - Bug Fix: Miscellaneous
 
 Known Limitations:
