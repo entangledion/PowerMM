@@ -1,10 +1,10 @@
 # PowerMM
-A Powershell-based graphical user interface utility for uploading Indicators of Compromise (IOCs) into Palo Alto MineMeld. Additional functionality may be added over time.
+A Powershell-based graphical user interface utility for uploading Indicators of Compromise (IOCs) into Palo Alto MineMeld Mining Nodes. The tool was first created as a way to operationalize and bring together the need to ingest cyber attack IOCs quickly into multiple non-integrated platforms, by multiple analysts within a SOC. I like to call it a "poor man's SOAR platform". Additional functionality may be added over time. 
 
 Features:
 
-- Rapid indicator ingestion into custom MineMeld Miner nodes. Useful if you maintain custom firewall IP, URL, and file hash blacklists 
-  in MineMeld, and want a simplified way to ingest and purge indicators.
+- Rapid indicator ingestion into custom MineMeld Miner nodes. Useful if you maintain aggregated lists of IP, URL, and file hash 
+  blacklists in MineMeld, and want a simplified way to ingest and purge indicators across a SOC.
 - Can upload a combined list of IPV4, CIDR, Domain Name, File Hash, and URL indicators to multiple miner nodes in a single pass.
 - Option to automatically create wildcard variants of uploaded domain names.
 - Control the age-out TTL of an indicator.
@@ -41,7 +41,7 @@ Pre-requisites:
    or team use, but not required.
 3) To use the ThreatConnect feature of the script, you must have access to and must have created a ThreatConnect API user account. You 
    will be prompted to enter the API Access ID and Secret Key the first time you execute this script.
-4)  You must have Windows Management Framework v3.0 or greater installed (to add Powershell v3.0 minimum support.
+4) You must have Windows Management Framework v3.0 or greater installed (to add Powershell v3.0 minimum support.
    Powershell v5.0+ is recommended). For more information about this package visit: https://www.microsoft.com/en-
    us/download/details.aspx?id=34595
 5) You must configure Powershell execution policy to allow execution of unsigned scripts, or execute the script using the -
@@ -50,15 +50,15 @@ Pre-requisites:
 6) When you first execute PowerMM, you will be prompted to enter some initial setup information, including the MineMeld node names that 
    will be used for blacklists and watchlists. A blacklist can be used by a firewall to dynamically block against any IOCs you add to
    the mining node, or can be used to match firewall traffic logs in a SIEM. A watchlist can also be used to match firewall traffic logs 
-   in a SIEM, or be used to send an email notification any time there is a match. These two use-cases are supported separately in 
-   PowerMM because an admin may not always want to block a specific IOC, but only monitor for activity. You will need to create four 
-   MineMeld miner (nodes) to use for blacklists, and four miner (nodes) to use for watchlists, for each of the supported IOC types 
-   (IPv4, URL, SHA1, SHA256).
+   in a SIEM, or be used to send an email notification any time there is a match. These two use-cases are supported in PowerMM by using 
+   separate miner nodes in MineMeld, because an admin may not always want to block a specific IOC, but only monitor for activity. You 
+   will need to create four MineMeld miner (nodes) to use for blacklists, and four miner (nodes) to use for watchlists, for each of the 
+   supported IOC types (IPv4, URL, SHA1, SHA256).
 7) In order to enable TTL for aging out old indicators in MineMeld, the miner nodes you create in MineMeld must use a clone of the 
    following built-in node type: stdlib.localDB. You should be able to locate this built-in node type in the node search box when adding 
    a new miner node in MineMeld. This built-in node type will show it supports indicator type of "ANY", and it may be listed as 
-   "expiremental". This is ok. Create a clone of this node type for each blacklist and watchlist node for each of the indicator types 
-   you want to ingest (IPv4, URL, SHA1, SHA256)
+   "expiremental". This is ok. Create a clone of this node type and deploy it for each blacklist and watchlist node for each of the 
+   indicator types you want to ingest (IPv4, URL, SHA1, SHA256)
 
 Instructions:
 
