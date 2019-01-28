@@ -1,35 +1,73 @@
 # PowerMM
-A Powershell-based graphical user interface utility for MineMeld. Additional functionality may be added over time.
-
-Currently the script supports uploading the following types of MineMeld indicators:
-
-- IPv4
-    - Also supports CIDR notation
-- URL
-    - Also supports simple FQDN or domain name, if blocking an entire domain or sub-domain
-- SHA1 File Hash
-- SHA256 File Hash
+A Powershell-based graphical user interface utility for uploading Indicators of Compromise (IOCs) into Palo Alto MineMeld. Additional functionality may be added over time.
 
 Features:
 
-- Rapid indicator ingestion into custom IPv4 & URL MineMeld Miners (nodes). Useful if you maintain custom firewall IP and URL blacklists 
-  in MineMeld, or wish to feed a custom IOC list into a SIEM.
+- Rapid indicator ingestion into custom MineMeld Miner nodes. Useful if you maintain custom firewall IP, URL, and file hash blacklists 
+  in MineMeld, and want a simplified way to ingest and purge indicators.
 - Can upload a combined list of IPV4, CIDR, Domain Name, File Hash, and URL indicators to multiple miner nodes in a single pass.
 - Option to automatically create wildcard variants of uploaded domain names.
 - Control the age-out TTL of an indicator.
 - Automatically stamps indicator descriptions with the user that uploaded it, and date stamp.
 - Performs duplicate indicator check prior to upload to prevent duplication of addresses.
-- Search option to spot-check the configured Output node/feed URLs for specific indicators or keywords.
+- Search miner node output URLs for specific indicators or keywords.
 - Multi-user support with shared upload history tracking if used from a mapped network drive.
+- Currently the script supports uploading the following types of indicators:
+    - IPv4 (also supports CIDR notation)
+    - URL (also supports simple FQDN or domain name)
+    - SHA1 File Hash
+    - SHA256 File Hash
+
+Release Notes:
+
+New in v2.4 :
+- Code review, sanitation, and cleanup
+
+New in v2.3 :
+- New button on main menu to view the release notes.
+- Ingest IOC window now requires use of http:// or https:// when adding URL's.
+
+New in v2.2 :
+- New button on main menu to view the log file of your last action.
+- New colors to help indicate action result status in the Powershell console window.
+
+New in v2.1
+- Bug Fix: IOC Search Deletion option is now working again.
+- Bug Fix: TC ingestion option is now working again.
+
+New in v1.9
+- New Feature: You can now ingest IPv4 CIDR Blocks.
+- Bug Fix: Miscellaneous
 
 Known Limitations:
 
 - Current version only supports uploading to one miner node name per IOC-type, per transaction (IPv4, URL, SHA1, SHA256).
-- In order to enable TTL age-out support for ingested IOCs, the miner nodes you create in MineMeld must use a clone of the following 
-  built-in node type: stdlib.localDB. You should be able to locate this built-in node type in the node search box when adding a new 
-  miner node in MineMeld. This built-in node type will show it supports indicator type of "ANY", and it may be listed as 
-  "expiremental". This is ok. Create a clone of this node type for each blacklist and watchlist node for each of the indicator types you 
-  want to ingest (IPv4, URL, SHA1, SHA256)
+
+Pre-requisites:
+
+1) You must have an instance of Palo Alto's MineMeld tool deployed.
+2) A mapped network drive is recommended for shared multi-user 
+   or team use, but not required.
+3) To use the ThreatConnect feature of the script, you must have access to and must have created a ThreatConnect API user account. You 
+   will be prompted to enter the API Access ID and Secret Key the first time you execute this script.
+4)  You must have Windows Management Framework v3.0 or greater installed (to add Powershell v3.0 minimum support.
+   Powershell v5.0+ is recommended). For more information about this package visit: https://www.microsoft.com/en-
+   us/download/details.aspx?id=34595
+5) You must configure Powershell execution policy to allow execution of unsigned scripts, or execute the script using the -
+   ExecutionPolicy bypass parameter (Windows default is set to Restricted). For more information about this setting, visit: 
+   https://technet.microsoft.com/en-us/library/ee176961.aspx
+6) When you first execute PowerMM, you will be prompted to enter some initial setup information, including the MineMeld node names that 
+   will be used for blacklists and watchlists. A blacklist can be used by a firewall to dynamically block against any IOCs you add to
+   the mining node, or can be used to match firewall traffic logs in a SIEM. A watchlist can also be used to match firewall traffic logs 
+   in a SIEM, or be used to send an email notification any time there is a match. These two use-cases are supported separately in 
+   PowerMM because an admin may not always want to block a specific IOC, but only monitor for activity. You will need to create four 
+   MineMeld miner (nodes) to use for blacklists, and four miner (nodes) to use for watchlists, for each of the supported IOC types 
+   (IPv4, URL, SHA1, SHA256).
+7) In order to enable TTL for aging out old indicators in MineMeld, the miner nodes you create in MineMeld must use a clone of the 
+   following built-in node type: stdlib.localDB. You should be able to locate this built-in node type in the node search box when adding 
+   a new miner node in MineMeld. This built-in node type will show it supports indicator type of "ANY", and it may be listed as 
+   "expiremental". This is ok. Create a clone of this node type for each blacklist and watchlist node for each of the indicator types 
+   you want to ingest (IPv4, URL, SHA1, SHA256)
 
 Instructions:
 
@@ -38,20 +76,12 @@ Instructions:
 - You will be prompted at first execution for:
     - The industry sector of your organization.
         NOTE: This information is used to automatically populate a tag (i.e. keyword) to the incident that will be ingested into    
-        ThreatConnect (if this feature is enabled). PowerMM gives you the opportunity to edit or remove this tag every time you ingest 
-        an indicator.
+        ThreatConnect (if you chose to enable this feature). PowerMM gives you the opportunity to edit or remove this tag every time you         ingest an indicator.
     - The IP or hostname of your MineMeld server
       - Example: minemeld.acme.corp
     - Your MineMeld username
     - Your MineMeld password
       - Note: The MM Password is cached to disk using AES standard Powershell SecureString encryption
-    
-    - You will be prompted to enter the MineMeld node names that will be used for blacklists and watchlists. A blacklist can be used 
-    by a firewall to dynamically block against any IOCs you add to the node, or can be used to match firewall traffic logs in a SIEM. A 
-    watchlist can also be used to match firewall traffic logs in SIEM, or used to send an email notification from your SIEM any time 
-    there is a match. 
-    These two use-cases are supported separately in PowerMM because an admin often may not want to always block a specific IOC, but only 
-    monitor activity for:
 
     # IPv4 Node Setup Prompts:
     - The IPv4 miner node name setup to be used as a blacklist, that you want to add IPv4 indicators to
