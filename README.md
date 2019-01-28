@@ -12,7 +12,8 @@ Currently the script supports uploading the following types of MineMeld indicato
 
 Features:
 
-- Rapid indicator ingestion into custom IPv4 & URL MineMeld Miners (nodes). Useful if you maintain custom firewall IP and URL blocklists in MineMeld, or wish to feed a custom IOC list into a SIEM.
+- Rapid indicator ingestion into custom IPv4 & URL MineMeld Miners (nodes). Useful if you maintain custom firewall IP and URL blacklists 
+  in MineMeld, or wish to feed a custom IOC list into a SIEM.
 - Can upload a combined list of IPV4, CIDR, Domain Name, File Hash, and URL indicators to multiple miner nodes in a single pass.
 - Option to automatically create wildcard variants of uploaded domain names.
 - Control the age-out TTL of an indicator.
@@ -27,7 +28,7 @@ Known Limitations:
 - In order to enable TTL age-out support for ingested IOCs, the miner nodes you create in MineMeld must use a clone of the following 
   built-in node type: stdlib.localDB. You should be able to locate this built-in node type in the node search box when adding a new 
   miner node in MineMeld. This built-in node type will show it supports indicator type of "ANY", and it may be listed as 
-  "expiremental". This is ok. Create a clone of this node type for each blocklist and watchlist node for each of the indicator types you 
+  "expiremental". This is ok. Create a clone of this node type for each blacklist and watchlist node for each of the indicator types you 
   want to ingest (IPv4, URL, SHA1, SHA256)
 
 Instructions:
@@ -45,17 +46,17 @@ Instructions:
     - Your MineMeld password
       - Note: The MM Password is cached to disk using AES standard Powershell SecureString encryption
     
-    - You will be prompted to enter the MineMeld node names that will be used for blocklists and watchlists. A blocklist can be used 
+    - You will be prompted to enter the MineMeld node names that will be used for blacklists and watchlists. A blacklist can be used 
     by a firewall to dynamically block against any IOCs you add to the node, or can be used to match firewall traffic logs in a SIEM. A 
-    watchlist can also be used to match firewall traffic logs in SIEM dashboard, or setup to send a SIEM email notification any time 
+    watchlist can also be used to match firewall traffic logs in SIEM, or used to send an email notification from your SIEM any time 
     there is a match. 
-    These two use-cases are supported separately in PowerMM because an admin often may not want to block a specific address, but 
-    only monitor activity for it:
+    These two use-cases are supported separately in PowerMM because an admin often may not want to always block a specific IOC, but only 
+    monitor activity for:
 
     # IPv4 Node Setup Prompts:
-    - The IPv4 miner node name setup to be used as a blocklist, that you want to add IPv4 indicators to
-      - Example: Acme_IPv4_Blocklist (the "Miner" Node name shown under the "Config" tab in MineMeld)
-    - An associated IPv4 output feed name for the blocklist (so the script can check it for duplicate indicators)
+    - The IPv4 miner node name setup to be used as a blacklist, that you want to add IPv4 indicators to
+      - Example: Acme_IPv4_blacklist (the "Miner" Node name shown under the "Config" tab in MineMeld)
+    - An associated IPv4 output feed name for the blacklist (so the script can check it for duplicate indicators)
       - Example: inboundfeed_bl_ipv4 (the "Output" Node name shown under the "Config" tab in MineMeld)
       - Example: Corresponds to https://minemeld.acme.corp/feeds/inboundfeed_bl_ipv4
     - The IPv4 miner node name setup to be used as a watchlist, that you want to add IPv4 indicators to
@@ -65,9 +66,9 @@ Instructions:
       - Example: Corresponds to https://minemeld.acme.corp/feeds/inboundfeed_watch_ipv4
       
     # URL Node Setup Prompts:
-    - The URL miner node name setup to be used as a blocklist, that you want to add URL indicators to 
-      - Example: Acme_URL_Blocklist (the "Miner" Node name shown under the "Config" tab in MineMeld)
-    - An associated URL "output" feed name for the blocklist (so the script can check it for duplicate indicators)
+    - The URL miner node name setup to be used as a blacklist, that you want to add URL indicators to 
+      - Example: Acme_URL_blacklist (the "Miner" Node name shown under the "Config" tab in MineMeld)
+    - An associated URL "output" feed name for the blacklist (so the script can check it for duplicate indicators)
       - Example: inboundfeed_bl_url (the "Output" Node name shown under the "Config" tab in MineMeld)
       - Example: Corresponds to https://minemeld.acme.corp/feeds/inboundfeed_bl_url
     - The URL miner node name setup to be used as a watchlist, that you want to add URL indicators to 
@@ -77,9 +78,9 @@ Instructions:
       - Example: Corresponds to https://minemeld.acme.corp/feeds/inboundfeed_watch_url
 
    # SHA1 Node Setup Prompts:
-    - The SHA1 miner node name setup to be used as a blocklist, that you want to add SHA1 indicators to 
-      - Example: Acme_SHA1_Blocklist (the "Miner" Node name shown under the "Config" tab in MineMeld)
-    - An associated SHA1 "output" feed name for the blocklist (so the script can check it for duplicate indicators)
+    - The SHA1 miner node name setup to be used as a blacklist, that you want to add SHA1 indicators to 
+      - Example: Acme_SHA1_blacklist (the "Miner" Node name shown under the "Config" tab in MineMeld)
+    - An associated SHA1 "output" feed name for the blacklist (so the script can check it for duplicate indicators)
       - Example: inboundfeed_bl_sha1 (the "Output" Node name shown under the "Config" tab in MineMeld)
       - Example: Corresponds to https://minemeld.acme.corp/feeds/inboundfeed_bl_sha1
     - The SHA1 miner node name setup to be used as a watchlist, that you want to add SHA1 indicators to 
@@ -89,9 +90,9 @@ Instructions:
       - Example: Corresponds to https://minemeld.acme.corp/feeds/inboundfeed_watch_sha1
  
     # SHA256 Node Setup Prompts:
-    - The SHA256 miner node name setup to be used as a blocklist, that you want to add SHA256 indicators to 
-      - Example: Acme_SHA256_Blocklist (the "Miner" Node name shown under the "Config" tab in MineMeld)
-    - An associated SHA256 "output" feed name for the blocklist (so the script can check it for duplicate indicators)
+    - The SHA256 miner node name setup to be used as a blacklist, that you want to add SHA256 indicators to 
+      - Example: Acme_SHA256_blacklist (the "Miner" Node name shown under the "Config" tab in MineMeld)
+    - An associated SHA256 "output" feed name for the blacklist (so the script can check it for duplicate indicators)
       - Example: inboundfeed_bl_sha256 (the "Output" Node name shown under the "Config" tab in MineMeld)
       - Example: Corresponds to https://minemeld.acme.corp/feeds/inboundfeed_bl_sha256
     - The SHA256 miner node name setup to be used as a watchlist, that you want to add SHA256 indicators to 
