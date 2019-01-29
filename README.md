@@ -22,6 +22,7 @@ Release Notes:
 
 New in v2.4.1:
 - Bug Fix: Error locating icon file
+- Enhanced error handling logic
 
 New in v2.4 :
 - Code review, sanitation, and cleanup
