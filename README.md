@@ -57,7 +57,7 @@ Pre-requisites:
    in a SIEM, or be used to send an email notification any time there is a match. These two use-cases are supported in PowerMM by using 
    separate miner nodes in MineMeld, because an admin may not always want to block a specific IOC, but only monitor for activity. You 
    will need to create four MineMeld miner (nodes) to use for blacklists, and four miner (nodes) to use for watchlists, for each of the 
-   supported IOC types (IPv4, URL, SHA1, SHA256).
+   supported IOC types (IPv4, URL, SHA1, SHA256). This step is required, even if you don't end up using all of these miner nodes.
 7) In order to enable TTL for aging out old indicators in MineMeld, the miner nodes you create in MineMeld must use a clone of the 
    following built-in node type: stdlib.localDB. You should be able to locate this built-in node type in the node search box when adding 
    a new miner node in MineMeld. This built-in node type will show it supports indicator type of "ANY", and it may be listed as 
