@@ -20,7 +20,7 @@ Features:
 
 Release Notes:
 
-New in v2.4.2:
+New in v2.4.1:
 - Bug Fix: Error locating icon file
 
 New in v2.4 :
