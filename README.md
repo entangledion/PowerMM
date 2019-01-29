@@ -21,11 +21,6 @@ Features:
 Release Notes:
 
 New in v2.4.1:
-- Bug Fix: Error locating icon file
-- Enhanced error handling logic
-
-New in v2.4 :
-- Code review, sanitation, and cleanup
 - New Feature: You can now ingest IPv4 CIDR Blocks.
 - New button on main menu to view the release notes.
 - New button on main menu to view the log file of your last action.
@@ -33,6 +28,8 @@ New in v2.4 :
 - Ingest IOC window now requires use of http:// or https:// when adding URL's.
 - ThreatConnect Threat Intelligence Platform support.
 - Bug Fix: Miscellaneous
+- Enhanced error handling logic
+- Code review, sanitation, and cleanup
 
 Known Limitations:
 
