@@ -27,7 +27,7 @@ New in v2.4.1:
 - New colors to help indicate action result status in the Powershell console window.
 - Ingest IOC window now requires use of http:// or https:// when adding URL's.
 - ThreatConnect Threat Intelligence Platform support.
-- Bug Fix: Miscellaneous
+- Miscellaneous bug fixes
 - Enhanced error handling logic
 - Code review, sanitation, and cleanup
 
