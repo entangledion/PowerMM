@@ -1,5 +1,5 @@
 # PowerMM
-A Powershell-based graphical user interface utility for uploading Indicators of Compromise (IOCs) into Palo Alto MineMeld Mining Nodes. The tool was first created as a way to operationalize and bring together the need to ingest cyber attack IOCs quickly into multiple non-integrated platforms, by multiple analysts within a SOC. I like to call it a "poor man's SOAR platform". Additional functionality may be added over time. 
+A Powershell-based graphical user interface utility for uploading Indicators of Compromise (IOCs) into Palo Alto MineMeld Mining Nodes. The tool was first created as a way to operationalize and bring together the need to ingest cyber attack IOCs quickly into multiple non-integrated platforms, by multiple analysts within a SOC. Additional functionality may be added over time. 
 
 Features:
 
