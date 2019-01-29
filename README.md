@@ -20,6 +20,9 @@ Features:
 
 Release Notes:
 
+New in v2.4.2:
+- Bug Fix: Error locating icon file
+
 New in v2.4 :
 - Code review, sanitation, and cleanup
 - New Feature: You can now ingest IPv4 CIDR Blocks.
